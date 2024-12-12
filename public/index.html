@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Firebase Hosting</title>
+
+    <!-- Replace all Firebase compat scripts with modern SDK -->
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+      import { getFunctions } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-functions.js";
+      import { getStorage } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCwzl7PRPvshj_quFILOWRhfui2jDqAN1c",
+        authDomain: "servicecrm-52868.firebaseapp.com",
+        projectId: "servicecrm-52868",
+        storageBucket: "servicecrm-52868.appspot.com",
+        messagingSenderId: "186269043686",
+        appId: "1:186269043686:web:d888021a58d597160fa427",
+        measurementId: "G-ZGVM2TPDW1"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      const functions = getFunctions(app);
+      const storage = getStorage(app);
+
+      // Move the DOMContentLoaded event listener here
+      document.addEventListener('DOMContentLoaded', function() {
+        const loadEl = document.querySelector('#load');
+
+        try {
+          loadEl.textContent = 'Firebase SDK loaded successfully!';
+          
+          // Add hamburger menu functionality
+          const hamburger = document.querySelector('.hamburger');
+          const leftMenu = document.querySelector('.left-menu');
+          const overlay = document.querySelector('.overlay');
+
+          function toggleMenu() {
+            leftMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+          }
+
+          hamburger.addEventListener('click', toggleMenu);
+          overlay.addEventListener('click', toggleMenu);
+
+          // Close menu when clicking a link (mobile)
+          const menuLinks = document.querySelectorAll('.left-menu a');
+          menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+              if (window.innerWidth <= 768) {
+                toggleMenu();
+              }
+            });
+          });
+
+        } catch (e) {
+          console.error(e);
+          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
+        }
+      });
+    </script>
+
+    <style media="screen">
+      body { 
+        background: #ECEFF1; 
+        color: rgba(0,0,0,0.87); 
+        font-family: Roboto, Helvetica, Arial, sans-serif; 
+        margin: 0; 
+        padding: 0; 
+        display: flex; 
+      }
+      
+      /* New left menu styles */
+      .left-menu {
+        width: 250px;
+        background: #2c3e50;
+        min-height: 100vh;
+        padding: 20px 0;
+      }
+
+      .left-menu ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .left-menu li {
+        padding: 15px 25px;
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .left-menu li:hover {
+        background: #34495e;
+      }
+
+      .left-menu li a {
+        color: white;
+        text-decoration: none;
+        display: block;
+        width: 100%;
+      }
+
+      .left-menu li:hover a {
+        color: white;
+      }
+
+      /* Adjust main content styles */
+      .main-content {
+        flex: 1;
+      }
+
+      #message { 
+        background: white; 
+        max-width: 360px; 
+        margin: 100px auto 16px; 
+        padding: 32px 24px; 
+        border-radius: 3px; 
+      }
+      #message h3 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
+      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
+      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
+      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
+      #message ul { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
+      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
+      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
+      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
+      @media (max-width: 600px) {
+        body, #message { margin-top: 0; background: white; box-shadow: none; }
+        body { border-top: 16px solid #ffa100; }
+      }
+
+      .left-menu li.active {
+        background: #34495e;
+      }
+      
+      .left-menu li.active a {
+        font-weight: bold;
+      }
+
+      /* Update hamburger menu styles */
+      .hamburger {
+        display: none;
+        font-size: 24px;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 98; /* Lower z-index than menu */
+        color: #2c3e50;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 5px;
+      }
+
+      /* Mobile styles */
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+
+        .hamburger {
+          display: block;
+        }
+
+        .left-menu {
+          position: fixed;
+          left: -250px;
+          top: 0;
+          height: 100vh;
+          transition: 0.3s;
+          z-index: 99;
+          padding-top: 60px; /* Add padding to prevent menu items from being hidden behind hamburger */
+        }
+
+        .left-menu.active {
+          left: 0;
+        }
+
+        /* Adjust main content to account for hamburger */
+        .main-content {
+          margin-left: 0;
+          width: 100%;
+          padding-left: 50px; /* Add padding to prevent content from being hidden behind hamburger */
+          padding-top: 15px;
+        }
+
+        /* Overlay when menu is open */
+        .overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 98;
+        }
+
+        .overlay.active {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Add hamburger button and overlay -->
+    <button class="hamburger">☰</button>
+    <div class="overlay"></div>
+
+    <!-- Add new left menu -->
+    <nav class="left-menu">
+      <ul>
+        <li class="active"><a href="index.html">Pricebooks</a></li>
+        <li><a href="materials.html">Materials</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="settings.html">Settings</a></li>
+      </ul>
+    </nav>
+
+    <!-- Wrap existing content in main-content div -->
+    <div class="main-content">
+      <div id="message">
+        <h2>Welcome</h2>
+        <h1>Pricebook Page</h1>
+        <p>You're seeing this because you've not setup a pricebook yet. Easy setup below will walk you through the process to setup your first pricebook.</p>
+        <h3>By the end of this tutorial you will have</h3>
+        <ul>
+          <li>A new Pricebook</li>
+          <li>Prices for your Pricebook services</li>
+          <li>Tools on how to take full advantage of your new Pricebook</li>
+        </ul>
+        <a target="_blank" href="https://firebase.google.com/docs/hosting/">Create My First Pricebook</a>
+      </div>
+      <p id="load">Firebase SDK Loading&hellip;</p>
+    </div>
+  </body>
+</html>

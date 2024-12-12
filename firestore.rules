@@ -1,0 +1,60 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+      // Users can read/write their own tasks
+    match /tasks/{taskId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+
+    // (Optional) Users can read/write their own user documents
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+// Allow users to read and write their own user document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // Allow users to read and write their own reports subcollection
+      match /reports/{reportId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      // Allow users to read and write their own sites subcollection
+      match /sites/{siteId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    // Secure access to the 'users' collection
+    match /users/{userId} {
+      allow read, write: if request.time > timestamp.date(2024, 9, 12);
+    }
+
+    // Allow read access to 'testCollection' by anyone but restrict write access
+    match /testCollection/{documentId} {
+      allow read: if true;  // Allow read access to everyone
+      allow write: if false;  // Deny write access to everyone
+    }
+
+    // Default rule to deny access to all other collections
+    match /{document=**} {
+      allow read, write: if request.time < timestamp.date(2024, 9, 12);
+    }
+  }
+
+  match /databases/{database}/documents {
+    match /users/{userId}/reports/{reportId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    match /tasks/{taskId} {
+      allow read, write: if request.auth.uid != null && request.auth.uid == resource.data.userId;
+    }
+  }
+}
